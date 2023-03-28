@@ -14,6 +14,29 @@ namespace Yabber
         private static readonly Regex TraversalRx = new Regex(@"^([(..)\\\/]+)(.+)?$");
         private static readonly Regex SlashRx = new Regex(@"^(\\+)(.+)$");
 
+
+        /// <summary>
+        /// Finds common path prefix in a list of strings.
+        /// </summary>
+        public static string FindCommonRootPath(IEnumerable<string> paths)
+        {
+            string root = "";
+
+            var rootPath = new string(
+                paths.First().Substring(0, paths.Min(s => s.Length))
+                    .TakeWhile((c, i) => paths.All(s => s[i] == c)).ToArray());
+
+            // For safety, truncate this shared string down to the last slash/backslash.
+            var rootPathIndex = Math.Max(rootPath.LastIndexOf('\\'), rootPath.LastIndexOf('/'));
+
+            if (rootPath != "" && rootPathIndex != -1)
+            {
+                root = rootPath.Substring(0, rootPathIndex);
+            }
+
+            return root;
+        }
+
         /// <summary>
         /// Removes common network path roots if present.
         /// </summary>
