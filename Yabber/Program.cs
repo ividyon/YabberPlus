@@ -1,12 +1,15 @@
 ﻿using SoulsFormats;
 using SoulsFormats.AC4;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Xml;
+using Microsoft.Extensions.FileSystemGlobbing;
 
 namespace Yabber
 {
@@ -40,10 +43,35 @@ namespace Yabber
             bool error = false;
             int errorcode = 0;
 
-            foreach (string path in args)
+            var paths = new List<string>();
+            foreach (string arg in args)
+            {
+                if (arg.Contains('*'))
+                {
+                    var matcher = new Matcher();
+                    int? idx = null;
+                    var rootParts = arg.Split(Path.DirectorySeparatorChar).TakeWhile(part => !part.Contains('*')).ToList();
+                    var root = string.Join(Path.DirectorySeparatorChar, rootParts);
+                    var rest = arg.Substring(root.Length + 1);
+
+                    matcher = matcher.AddInclude(rest.Replace(Path.DirectorySeparatorChar.ToString(), "/"));
+                    var files = Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, root), "*", SearchOption.AllDirectories);
+                    var match = matcher.Match(Path.Combine(Environment.CurrentDirectory, root), files);
+                    if (match.HasMatches)
+                    {
+                        paths.AddRange(match.Files.Select(m => Path.Combine(root, m.Path)).ToList());
+                    }
+                }
+                else
+                {
+                    paths.Add(arg);
+                }
+            }
+            foreach (string halfPath in paths)
             {
                 try
                 {
+                    string path = Path.GetFullPath(halfPath);
                     // int maxProgress = Console.WindowWidth - 1;
                     // int lastProgress = 0;
                     //
@@ -113,6 +141,7 @@ namespace Yabber
                     errorcode = 4;
                     error = true;
                 }
+                #if (!DEBUG)
                 catch (Exception ex)
                 {
                     Console.WriteLine();
@@ -120,6 +149,7 @@ namespace Yabber
                     errorcode = 1;
                     error = true;
                 }
+                #endif
 
                 Console.WriteLine();
             }

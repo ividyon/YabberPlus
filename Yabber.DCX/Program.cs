@@ -1,9 +1,12 @@
 ﻿using SoulsFormats;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Xml;
+using Microsoft.Extensions.FileSystemGlobbing;
 
 namespace Yabber
 {
@@ -28,10 +31,36 @@ namespace Yabber
             bool error = false;
             int errorcode = 0;
 
-            foreach (string path in args)
+
+            var paths = new List<string>();
+            foreach (string arg in args)
+            {
+                if (arg.Contains('*'))
+                {
+                    var matcher = new Matcher();
+                    int? idx = null;
+                    var rootParts = arg.Split(Path.DirectorySeparatorChar).TakeWhile(part => !part.Contains('*')).ToList();
+                    var root = string.Join(Path.DirectorySeparatorChar, rootParts);
+                    var rest = arg.Substring(root.Length + 1);
+
+                    matcher = matcher.AddInclude(rest.Replace(Path.DirectorySeparatorChar.ToString(), "/"));
+                    var files = Directory.GetFiles(Path.Combine(Environment.CurrentDirectory, root), "*", SearchOption.AllDirectories);
+                    var match = matcher.Match(Path.Combine(Environment.CurrentDirectory, root), files);
+                    if (match.HasMatches)
+                    {
+                        paths.AddRange(match.Files.Select(m => Path.Combine(root, m.Path)).ToList());
+                    }
+                }
+                else
+                {
+                    paths.Add(arg);
+                }
+            }
+            foreach (string halfPath in paths)
             {
                 try
                 {
+                    string path = Path.GetFullPath(halfPath);
                     if (DCX.Is(path))
                     {
                         error |= Decompress(path);
