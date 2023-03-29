@@ -365,12 +365,12 @@ namespace Yabber
                     Console.WriteLine($"Unpacking PARAM: {fileName}...");
                     PARAM p = PARAM.Read(sourceFile);
 
-                    return p.Unpack(fileName, game.Value);
+                    return p.Unpack(sourceFile, sourceDir, game.Value);
                 }
                 else if (sourceFile.EndsWith(".param.xml"))
                 {
                     Console.WriteLine($"Repacking PARAM: {fileName}...");
-                    return YPARAM.Repack(sourceFile);
+                    return YPARAM.Repack(sourceFile, sourceDir);
                 }
                 else
                 {

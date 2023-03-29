@@ -38,7 +38,7 @@ namespace Yabber
         private static Dictionary<YBUtil.GameType, Dictionary<string, Dictionary<int, string>>>
             NameStorage { get; set; } = new Dictionary<YBUtil.GameType, Dictionary<string, Dictionary<int, string>>>();
 
-        public static bool Unpack(this PARAM param, string sourceFile, YBUtil.GameType game)
+        public static bool Unpack(this PARAM param, string sourceFile, string sourceDir, YBUtil.GameType game)
         {
             string paramType = param.ParamType;
 
@@ -77,7 +77,7 @@ namespace Yabber
             // Begin writing the XML
             var xws = new XmlWriterSettings();
             xws.Indent = true;
-            XmlWriter xw = XmlWriter.Create($"{sourceFile}.xml", xws);
+            XmlWriter xw = XmlWriter.Create(Path.Combine(sourceDir, $"{sourceFile}.xml"), xws);
             xw.WriteStartElement("param");
 
             // Meta data
@@ -266,7 +266,7 @@ namespace Yabber
             return false;
         }
 
-        public static bool Repack(string sourceFile)
+        public static bool Repack(string sourceFile, string sourceDir)
         {
             var param = new YABBERPARAM();
 
@@ -422,7 +422,7 @@ namespace Yabber
                 throw new Exception($"Could not parse param {sourceFile} with paramdef {paramType}.", e);
             }
 
-            string outPath = sourceFile.Replace(".param.xml", ".param");
+            string outPath = Path.Combine(sourceDir, sourceFile.Replace(".param.xml", ".param"));
             YBUtil.Backup(outPath);
             param.Write(outPath);
 
