@@ -3,16 +3,24 @@ using SoulsFormats.AC4;
 using System;
 using System.Data;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using System.Xml;
 
 namespace Yabber
 {
     class Program
     {
+
+        static YBUtil.GameType? game = null;
+
         static void Main(string[] args)
         {
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
+            Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+
             if (args.Length == 0)
             {
                 Assembly assembly = Assembly.GetExecutingAssembly();
@@ -317,6 +325,23 @@ namespace Yabber
                     Zero3 z3 = Zero3.Read(sourceFile);
                     z3.Unpack(targetDir);
                 }
+                else if (sourceFile.EndsWith(".param"))
+                {
+                    if (game == null)
+                    {
+                        game = YBUtil.DetermineParamdexGame(sourceDir);
+                    }
+
+                    Console.WriteLine($"Unpacking PARAM: {fileName}...");
+                    PARAM p = PARAM.Read(sourceFile);
+
+                    return p.Unpack(fileName, game.Value);
+                }
+                else if (sourceFile.EndsWith(".param.xml"))
+                {
+                    Console.WriteLine($"Repacking PARAM: {fileName}...");
+                    return YPARAM.Repack(sourceFile);
+                }
                 else
                 {
                     Console.WriteLine($"File format not recognized: {fileName}");
@@ -449,7 +474,7 @@ namespace Yabber
             }
 
             if (sourceName.Contains("regulation-bnd-dcx") || sourceName.Contains("Data0") || sourceName.Contains("regulation-bin"))
-                return ReEncryptRegulationFile(sourceName, sourceDir, targetDir, progress);
+                return ReEncryptRegulationFile( sourceName, sourceDir, targetDir, progress);
 
             return false;
         }
@@ -457,26 +482,26 @@ namespace Yabber
         private static bool ReEncryptRegulationFile(string sourceName, string sourceDir, string targetDir, IProgress<float> progress)
         {
             XmlDocument xml = new XmlDocument();
-            xml.Load($"{sourceDir}\\_yabber-tpf.xml");
+            xml.Load($"{sourceDir}\\_yabber-bnd4.xml");
 
-            string filename = xml.SelectSingleNode("tpf/filename").InnerText;
-            string regFile = $"{sourceDir}\\{filename}";
+            string filename = xml.SelectSingleNode("bnd4/filename").InnerText;
+            string regFile = $"{targetDir}\\{filename}";
 
-            if (sourceName.Contains("regulation.bin"))
+            if (filename.Contains("regulation.bin"))
             {
                 BND4 bnd = BND4.Read(regFile);
                 SFUtil.EncryptERRegulation(regFile, bnd);
                 return false;
             }
 
-            if (sourceName.Contains("Data0"))
+            if (filename.Contains("Data0"))
             {
                 BND4 bnd = BND4.Read(regFile);
                 SFUtil.EncryptDS3Regulation(regFile, bnd);
                 return false;
             }
 
-            if (sourceName.Contains("enc_regulation.bnd.dcx"))
+            if (filename.Contains("enc_regulation.bnd.dcx"))
             {
                 if (!Confirm("DS2 files cannot be re-encrypted, yet, so re-packing this folder might ruin your encrypted bnd."))
                 {

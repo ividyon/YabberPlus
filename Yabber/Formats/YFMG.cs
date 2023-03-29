@@ -20,7 +20,6 @@ namespace Yabber
             xw.WriteElementString("bigendian", fmg.BigEndian.ToString());
             xw.WriteStartElement("entries");
 
-            // I think they're sorted already, but whatever
             fmg.Entries.Sort((e1, e2) => e1.ID.CompareTo(e2.ID));
             foreach (FMG.Entry entry in fmg.Entries)
             {

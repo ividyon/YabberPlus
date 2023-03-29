@@ -2,3 +2,7 @@
 	path = SoulsFormats
 	url = https://github.com/Nordgaren/SoulsFormats
 	branch = er
+[submodule "Paramdex"]
+	path = Paramdex
+	url = https://github.com/ividyon/Paramdex
+	branch = dsms
