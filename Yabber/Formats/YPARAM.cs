@@ -268,7 +268,7 @@ namespace Yabber
 
         public static bool Repack(string sourceFile, string sourceDir)
         {
-            var param = new YABBERPARAM();
+            var param = new PARAM();
 
             XmlDocument xml = new XmlDocument();
             xml.Load(sourceFile);

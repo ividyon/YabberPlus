@@ -11,6 +11,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Yabber.Context", "Yabber.Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SoulsFormats", "SoulsFormats\SoulsFormats\SoulsFormats.csproj", "{E6064585-8742-44A9-AFBC-75288AD42527}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudioUtils", "StudioUtils\StudioUtils.csproj", "{2BFBF581-55F6-4C1B-B97B-BDCACDB73114}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FSParam", "FSParam\FSParam.csproj", "{87223668-DA3F-4BED-8F96-7E763EF072AD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +37,14 @@ Global
 		{E6064585-8742-44A9-AFBC-75288AD42527}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E6064585-8742-44A9-AFBC-75288AD42527}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E6064585-8742-44A9-AFBC-75288AD42527}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2BFBF581-55F6-4C1B-B97B-BDCACDB73114}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2BFBF581-55F6-4C1B-B97B-BDCACDB73114}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2BFBF581-55F6-4C1B-B97B-BDCACDB73114}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2BFBF581-55F6-4C1B-B97B-BDCACDB73114}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87223668-DA3F-4BED-8F96-7E763EF072AD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87223668-DA3F-4BED-8F96-7E763EF072AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87223668-DA3F-4BED-8F96-7E763EF072AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87223668-DA3F-4BED-8F96-7E763EF072AD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
